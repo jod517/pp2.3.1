@@ -1,8 +1,5 @@
 package testgroup.filmography.model;
 
-
-
-
 import javax.persistence.*;
 
 @Entity

@@ -22,19 +22,21 @@ import java.util.Properties;
 public class DbConfig {
 
 
+    private final Environment environment;
+
     @Autowired
-    private Environment environment;
-
-
+    public DbConfig(Environment environment) {
+        this.environment = environment;
+    }
 
     @Bean
-    public DataSource dataSource() {
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setDriverClassName(environment.getRequiredProperty("jdbc.driverClassName"));
-        dataSource.setUrl(environment.getRequiredProperty("jdbc.url"));
-        dataSource.setUsername(environment.getRequiredProperty("jdbc.username"));
-        dataSource.setPassword(environment.getRequiredProperty("jdbc.password"));
-        return dataSource;
+    public DataSource getDataSource() {
+        DriverManagerDataSource driverManagerDataSource = new DriverManagerDataSource();
+        driverManagerDataSource.setDriverClassName(environment.getProperty("db.driver"));
+        driverManagerDataSource.setUrl(environment.getProperty("db.url"));
+        driverManagerDataSource.setUsername(environment.getProperty("db.username"));
+        driverManagerDataSource.setPassword(environment.getProperty("db.password"));
+        return driverManagerDataSource;
     }
 
     @Bean
@@ -42,7 +44,7 @@ public class DbConfig {
         LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean =
                 new LocalContainerEntityManagerFactoryBean();
 
-        localContainerEntityManagerFactoryBean.setDataSource(dataSource());
+        localContainerEntityManagerFactoryBean.setDataSource(getDataSource());
         localContainerEntityManagerFactoryBean.setPersistenceProviderClass(HibernatePersistenceProvider.class);
         localContainerEntityManagerFactoryBean.setPackagesToScan(environment.getProperty("db.entitymanager.packages.to.scan"));
 
